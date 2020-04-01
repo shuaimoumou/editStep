@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>改步数</title>
+    <style>
+        .mainArea{
+            width: 100%;
+            height: 100%;
+            background: #333333;
+            overflow: hidden;
+        }
+        #stepNum{
+            display: block;
+            width: 50%;
+            height: 80px;
+            margin: 50% auto 30%;
+            text-align: center;
+            font-size: 30px;
+            border-radius: 10px;
+        }
+        .godBtn{
+            width: 80%;
+            display: block;
+            margin: 0 auto;
+            height: 160px;
+            background: brown;
+            color: #ffffff;
+            font-size: 40px;
+            border: none;
+            border-radius: 20px;
+        }
+        .info{
+            color: #ffffff;
+            height: 300px;
+            font-size: 30px;
+            line-height: 300px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mainArea" id="mainArea">
+        <input type="number" placeholder="请输入你想变的步数" id="stepNum">
+        <button class="godBtn" onclick="changeStep()">愉快提交</button>
+        <div class="info">注意：这个改步数只能改我自己的，你们改不了的哈！</div>
+    </div>
+    <script>
+        var screenHight=screen.height;
+        document.getElementById("mainArea").style.height=screenHight*2+"px"
+        console.log(screenHight)
+        var Ajax={
+            // datat应为'a=a1&b=b1'这种字符串格式，在jq里如果data为对象会自动将对象转成这种字符串格式
+            post: function (url, data, fn) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", url, true);
+                // 添加http头，发送信息至服务器时内容编码类型
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
+                        fn.call(this, xhr.responseText);
+                    }
+                };
+                xhr.send(data);
+            }
+        }
+        function changeStep() {
+            var stepNum=document.getElementById("stepNum").value;
+            console.log(stepNum)
+            Ajax.post("/proxy",'bushu='+stepNum,function (res) {
+                 res=JSON.parse(res)
+                if(res.code==200){
+                    alert("修改成功！")
+                }else{
+                    alert("修改失败")
+                }
+            })
+        }
+    </script>
+</body>
+</html>
